@@ -1,5 +1,8 @@
 import { Redirect, Route } from 'react-router-dom';
+import React, { useState } from 'react';
+import { home, person } from 'ionicons/icons';
 import {
+  IonHeader, IonToolbar, IonTitle, IonButtons, IonButton,
   IonApp,
   IonIcon,
   IonLabel,
@@ -10,10 +13,9 @@ import {
   setupIonicReact
 } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-import { ellipse, square, triangle } from 'ionicons/icons';
-import Tab1 from './pages/Tab1';
-import Tab2 from './pages/Tab2';
-import Tab3 from './pages/Tab3';
+import Login from './pages/Login';
+import Mesas from './pages/Mesas';
+import Pago from './pages/Pago';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -30,6 +32,7 @@ import '@ionic/react/css/text-alignment.css';
 import '@ionic/react/css/text-transformation.css';
 import '@ionic/react/css/flex-utils.css';
 import '@ionic/react/css/display.css';
+//import '@ionic/react/css/palettes/high-contrast.system.css';
 
 /**
  * Ionic Dark Mode
@@ -41,47 +44,74 @@ import '@ionic/react/css/display.css';
 /* import '@ionic/react/css/palettes/dark.always.css'; */
 /* import '@ionic/react/css/palettes/dark.class.css'; */
 import '@ionic/react/css/palettes/dark.system.css';
+//import '@ionic/react/css/palettes/high-contrast-dark.system.css';
+
 
 /* Theme variables */
 import './theme/variables.css';
+import api from './services/api';
 
 setupIonicReact();
 
-const App: React.FC = () => (
-  <IonApp>
-    <IonReactRouter>
-      <IonTabs>
-        <IonRouterOutlet>
-          <Route exact path="/tab1">
-            <Tab1 />
-          </Route>
-          <Route exact path="/tab2">
-            <Tab2 />
-          </Route>
-          <Route path="/tab3">
-            <Tab3 />
-          </Route>
-          <Route exact path="/">
-            <Redirect to="/tab1" />
-          </Route>
-        </IonRouterOutlet>
-        <IonTabBar slot="bottom">
-          <IonTabButton tab="tab1" href="/tab1">
-            <IonIcon aria-hidden="true" icon={triangle} />
-            <IonLabel>Tab 1</IonLabel>
-          </IonTabButton>
-          <IonTabButton tab="tab2" href="/tab2">
-            <IonIcon aria-hidden="true" icon={ellipse} />
-            <IonLabel>Tab 2</IonLabel>
-          </IonTabButton>
-          <IonTabButton tab="tab3" href="/tab3">
-            <IonIcon aria-hidden="true" icon={square} />
-            <IonLabel>Tab 3</IonLabel>
-          </IonTabButton>
-        </IonTabBar>
-      </IonTabs>
-    </IonReactRouter>
-  </IonApp>
-);
+const App: React.FC = () => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+const logout = async () => {
+  try {
+    await api.post('/auth/logout');
+  } catch (error) {
+    console.error('Error en logout', error);
+  } finally {
+    setIsLoggedIn(false);
+  }
+};
+
+return (
+    <IonApp>
+      <IonReactRouter>
+        {isLoggedIn ? (
+          <>
+            {/* Header con botón cerrar sesión */}
+            <IonHeader>
+              <IonToolbar>
+                <IonTitle>Arepas 21</IonTitle>
+                <IonButtons slot="end">
+                  <IonButton onClick={logout}>Cerrar sesión</IonButton>
+                </IonButtons>
+              </IonToolbar>
+            </IonHeader>
+
+            {/* Contenido principal: tabs */}
+            <IonTabs>
+              <IonRouterOutlet>
+                <Route exact path="/home" component={Mesas} />
+                <Route exact path="/perfil" component={Pago} />
+                <Redirect exact from="/" to="/home" />
+              </IonRouterOutlet>
+
+              <IonTabBar slot="bottom">
+                <IonTabButton tab="home" href="/home">
+                  <IonIcon icon={home} />
+                  <IonLabel>Home</IonLabel>
+                </IonTabButton>
+                <IonTabButton tab="perfil" href="/perfil">
+                  <IonIcon icon={person} />
+                  <IonLabel>Perfil</IonLabel>
+                </IonTabButton>
+              </IonTabBar>
+            </IonTabs>
+          </>
+        ) : (
+          <IonRouterOutlet>
+            <Route exact path="/login">
+              <Login onLogin={() => setIsLoggedIn(true)} />
+            </Route>
+            <Redirect to="/login" />
+          </IonRouterOutlet>
+        )}
+      </IonReactRouter>
+    </IonApp>
+  );
+};
 
 export default App;

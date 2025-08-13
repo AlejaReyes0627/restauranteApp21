@@ -1,0 +1,64 @@
+/* asegúrate que el app ocupe toda la pantalla */
+html, body, #root, ion-app {
+  height: 100%;
+  width: 100%;
+}
+
+/* fondo y ajustes en IonContent */
+.login-content {
+  --background: transparent;
+  background: linear-gradient(135deg, #FFD700, #FF7E00, #E53935);
+  background-size: 300% 300%;
+  animation: gradientAnimation 8s ease infinite;
+}
+
+/* Animación suave */
+@keyframes gradientAnimation {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* wrapper que ocupa toda la altura y centra */
+.login-wrapper {
+  min-height: 100vh; /* importante para centrar verticalmente en móvil */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+/* tarjeta */
+.login-card {
+  width: 95%;
+  max-width: 420px;
+  background: rgba(0,0,0,0.78);
+  padding: 22px;
+  border-radius: 14px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.35);
+  text-align: center;
+}
+
+/* logo responsivo */
+.login-logo {
+  width: 120px;
+  height: auto;
+  margin: 0 auto 12px;
+}
+
+/* textos */
+.login-title { color: #fff; font-size: 22px; margin: 0 0 6px; }
+.login-subtitle { color: #cfcfcf; font-size: 13px; margin-bottom: 16px; }
+
+/* inputs y botón */
+.login-input { --background: rgba(255,255,255,0.06); border-radius: 10px; margin-bottom: 12px; }
+.login-button { --background: #ff7043; --color: #fff; border-radius: 10px; margin-top: 8px; }
+
+/* error */
+.error-text { display:block; margin-top:8px; }
+
+/* pequeños ajustes en pantallas muy chicas */
+@media (max-width: 360px) {
+  .login-logo { width: 96px; }
+  .login-card { padding: 16px; }
+}
